@@ -102,6 +102,26 @@ GC-class-preserving swaps), `gcbox_ko`, `at_backfill` (keep words, drop GC), `gc
 constructs separate the hypotheses; `runs/v0/design_sequences.npz` holds the sequences for scoring
 with a trained model, and the best-separating classes are MPBA library candidates.
 
+## v0 results (oracle only, no trained model yet)
+
+Full tables and figures: [`results/v0/summary.md`](results/v0/summary.md). These are ceilings: what
+perfect attributions show, before any model error.
+
+- **A pure composition rule still yields "motifs".** M1 attributions are flat and diffuse (5% of
+  positions carry 9% of |contribution| vs 87% for M0), yet calling seqlets on them gives GC-box cores in
+  15% of seqlets vs 2% background and CpG-rich top 6-mers. A standard motif-calling pass on a GC-driven
+  factor would report GC-rich words.
+- **DBD + composition looks like DBD alone.** M3a attributions correlate r = 0.97 with M0. Each base
+  carries only ~1/201 of the composition term, so single-base ISM cannot see it next to a motif.
+- **Region-scale designs separate what ISM cannot.** Keeping words but dropping core GC (`at_backfill`)
+  costs M3a -0.75 log2 and M0 +0.09; raising GC without words (`gc_backfill_scrubbed`) is +0.77 for M1 and
+  negative for every motif grammar; `kmer_implant` is +2.28 for M2 and -1.72 for M0. `gcbox_ko`,
+  `at_backfill`, `gc_backfill_scrubbed` and `kmer_implant` together separate all five grammars.
+- **Low-complexity vs motif is separable at the word level** (M2 seqlets: 100% GGGAGGG<=1mm, 4% GGGCGG),
+  but a one-mismatch criterion confuses them (56% of M0 seqlets also match GGGAGGG<=1mm via GGGCGGG).
+- **GC-matched negatives dampen the composition contrast.** GC vs signal Spearman drops from 0.82 to
+  0.44 for M3a (train) when sampling peaks plus GC-matched background instead of tiles.
+
 ## Caveats
 
 - Every position is a site and overlapping sites are not excluded, so occupancy is phenomenological,

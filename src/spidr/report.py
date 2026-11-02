@@ -54,7 +54,7 @@ def fig_locus(genome, run_dirs, chrom, out, span=30_000):
     ax = axes[0]
     ax.plot(x, gc, color=INK, lw=1)
     ax.set_ylabel("GC\n(201 bp)", rotation=0, ha="right", va="center")
-    ax.set_title(f"{chrom}:{s:,}-{e:,}   simulated ChEC, replicate 1, 50 bp bins")
+    ax.set_title(f"{chrom}:{s:,}-{e:,}   simulated ChEC, replicate 1, 50 bp bins\n", linespacing=1.6)
     kinds = {"CGI": ("#52514e", "CGI"), "gcbox": (SERIES[0], "GC-box"), "repeat": (SERIES[2], "repeat")}
     for c, a, b, t, n in ann:
         if b > s and a < e and t in kinds:
@@ -63,8 +63,8 @@ def fig_locus(genome, run_dirs, chrom, out, span=30_000):
             colr = SERIES[1] if n == "(GGGA)n" else kinds[t][0]
             ax.plot([max(a, s) / 1e3, min(b, e) / 1e3], [y, y], color=colr, lw=lw, solid_capstyle="butt",
                     transform=ax.get_xaxis_transform())
-    ax.text(1.0, 1.02, "bars: CGI (grey) · GC-box (blue) · (GGGA)n (orange) · other repeats (green)",
-            transform=ax.transAxes, ha="right", va="bottom", color=MUTED, fontsize=7)
+    ax.text(0.0, 1.03, "bars: CGI (grey) · GC-box (blue) · (GGGA)n (orange) · other repeats (green)",
+            transform=ax.transAxes, ha="left", va="bottom", color=MUTED, fontsize=7)
     for ax, g in zip(axes[1:], names):
         cnt = load_tracks(run_dirs[g], chrom, ["counts_rep1"])["counts_rep1"][s:e]
         nb = len(cnt) // 50
@@ -112,10 +112,11 @@ def fig_attribution(W, hyps, out, flank, output_len, zoom=250):
             ax.axvspan(p - 0.5, p + 0.5, color=SERIES[1], alpha=0.10, lw=0)
         ax.set_ylabel(g, rotation=0, ha="right", va="center")
         ax.yaxis.set_major_locator(plt.MaxNLocator(2))
-    axes[0].set_title(f"Oracle ISM contributions, same sequence under each grammar "
-                      f"({W['chrom']}, window {best}); shading: GC-box (blue), GGGAGGG<=1mm (orange)")
-    axes[0].text(1.0, 1.02, "bars coloured A green · C blue · G yellow · T red", transform=axes[0].transAxes,
-                 ha="right", va="bottom", color=MUTED, fontsize=7)
+    axes[0].set_title(f"Oracle ISM contributions, same sequence under each grammar ({W['chrom']}, window {best})\n",
+                      linespacing=1.6)
+    axes[0].text(0.0, 1.03, "bars: A green · C blue · G yellow · T red    shading: GC-box match (blue), "
+                 "GGGAGGG <=1 mismatch (orange)", transform=axes[0].transAxes, ha="left", va="bottom",
+                 color=MUTED, fontsize=7)
     axes[-1].set_xlabel("position in input window (bp)")
     fig.tight_layout()
     fig.savefig(out, dpi=150)
