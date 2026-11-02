@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spidr"
+version = "0.1.0"
+description = "Planted-grammar genome simulator for testing whether sequence models recover IDR-like composition rules from ChEC-seq"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24", "scipy>=1.10", "h5py>=3.8", "matplotlib>=3.7", "pyyaml>=6"]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[project.scripts]
+spidr = "spidr.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

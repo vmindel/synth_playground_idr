@@ -1,0 +1,61 @@
+# v0: does attribution on a ChEC-trained seq2profile model separate a GC-composition IDR rule,
+# a low-complexity (GGGAGGG) avidity rule, and an SP/KLF-like DBD motif?
+out_dir: runs/v0
+results_dir: results/v0
+input_len: 2114
+output_len: 1000
+
+genome:
+  n_chrom: 5
+  chrom_len: 2000000
+  seed: 1
+
+chec:
+  tether_offset: 25.0
+  tether_sd: 12.0
+  footprint_half: 8
+  mnase_at_pref: 1.0
+  saturation: 0.3
+  gc_bias_sd: 0.25
+  total_cuts: 5.0e+6
+  nb_dispersion: 5.0
+  n_replicates: 2
+
+simulation:
+  occupancy_per_mb: 50
+  seed: 7
+
+splits:
+  train: [chr1, chr2, chr3]
+  val: [chr4]
+  test: [chr5]
+
+export:
+  modes: [tile, peaks_gcmatched]
+  train_stride: 500
+  peak_quantile: 0.9
+  neg_ratio: 1.0
+  bedgraph: false
+
+ism:
+  n_top_each: 12
+  n_random: 40
+  seed: 3
+
+designs:
+  core_len: 300
+  seed: 0
+
+grammars:
+  M0_motif:
+    - {type: pwm, consensus: GGGGCGGGG, scale: 1.5}
+  M1_composition:
+    - {type: composition, window: 201, beta: 20.0, gc_ref: 0.42}
+  M2_lowcomplexity:
+    - {type: kmer_avidity, motifs: [GGGAGGG], max_mm: 1, eps_site: 2.0, lam: 2.0, window: 201, beta: 1.5}
+  M3a_motif+composition:
+    - {type: pwm, consensus: GGGGCGGGG, scale: 1.2, name: dbd}
+    - {type: composition, window: 201, beta: 12.0, gc_ref: 0.42}
+  M3b_motif+lowcomplexity:
+    - {type: pwm, consensus: GGGGCGGGG, scale: 1.2, name: dbd}
+    - {type: kmer_avidity, motifs: [GGGAGGG], max_mm: 1, eps_site: 2.0, lam: 2.0, window: 201, beta: 1.0}
